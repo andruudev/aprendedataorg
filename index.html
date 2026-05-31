@@ -329,9 +329,92 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwNZVnu2BpTmBl3i-WJLnCqKek-uUDKImyGkTageESZztNRwBiq2yL0xlUJ2pqiOborTg/exec';
+
+    async function subscribe() {
+      const input = document.getElementById('email-input');
+      const btn   = document.querySelector('.btn');
+      const msg   = document.getElementById('success-msg');
+      const email = input.value.trim();
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        input.style.borderColor = '#ff6584';
+        setTimeout(() => input.style.borderColor = '', 1500);
+        return;
+      }
+
+      // Estado de carga
+      btn.disabled = true;
+      btn.textContent = '...';
+
+      try {
+        // GET con params en la URL — más confiable con Apps Script y no-cors
+        await fetch(SHEET_URL + '?email=' + encodeURIComponent(email), {
+          method: 'GET',
+          mode: 'no-cors',
+        });
+
+        input.value = '';
+        msg.style.color = '#6ee7b7';
+        msg.textContent = '¡Listo! Te avisaremos cuando lancemos 🚀';
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 5000);
+      } catch (err) {
+        msg.style.color = '#ff6584';
+        msg.textContent = 'Algo salió mal, intenta de nuevo.';
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 4000);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Notifícame';
+      }
+    }
+
+    document.getElementById('email-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') subscribe();
+    });
+  </script>
+
+</body>
+</html>
+  <script>
+    // Fecha objetivo: 3 meses desde hoy
+    const target = new Date();
+    target.setMonth(target.getMonth() + 3);
+
+    function pad(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = target - now;
+
+      if (diff <= 0) {
+        document.getElementById('days').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('days').textContent = pad(days);
+      document.getElementById('hours').textContent = pad(hours);
+      document.getElementById('minutes').textContent = pad(minutes);
+      document.getElementById('seconds').textContent = pad(seconds);
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
     function subscribe() {
       const input = document.getElementById('email-input');
-      const msg   = document.getElementById('success-msg');
+      const msg = document.getElementById('success-msg');
       const email = input.value.trim();
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -345,10 +428,12 @@
       setTimeout(() => msg.style.display = 'none', 4000);
     }
 
-    document.getElementById('email-input').addEventListener('keydown', e => {
+    // Permitir enviar con Enter
+    document.getElementById('email-input').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') subscribe();
     });
   </script>
 
 </body>
+
 </html>
