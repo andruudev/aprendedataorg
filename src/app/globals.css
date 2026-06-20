@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0a0e1a;
+  --surface: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.09);
+  --accent: #6c63ff;
+  --accent-2: #ff6584;
+  --text: #f0f0f0;
+  --muted: #8a8fa8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Selección de texto */
+::selection {
+  background: rgba(108, 99, 255, 0.3);
+  color: var(--text);
+}
